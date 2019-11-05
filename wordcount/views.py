@@ -1,5 +1,6 @@
 from wordcount import settings
 from wordcount.models import FileUpload
+from wordcount.serializers import FileUploadSerializer
 from rest_framework import views
 from rest_framework.response import Response
 from rest_framework.parsers import FileUploadParser
@@ -69,6 +70,13 @@ class FileUploadView(views.APIView):
             'lines': line_nr,
             'error_lines': error_lines
         }
+
+    def get(self, request):
+        """
+        Returns a list of all existing wordcount records.
+        """
+        serialized = FileUploadSerializer(FileUpload.objects.all(), many=True)
+        return Response(serialized.data, 200)
 
     def put(self, request, format=None):
         """
