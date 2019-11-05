@@ -15,7 +15,7 @@ class FileUploadView(views.APIView):
             resp = {
                 'error': 'Uploaded file is too large, limit is %d MB' % (settings.WORDCOUNT_API['MAX_FILESIZE'] / 1000000)
             }
-            return Response(resp, 413);
+            return Response(resp, 413)
 
         resp = {
             'wordcount': 0,

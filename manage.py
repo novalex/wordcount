@@ -2,10 +2,17 @@
 """Django's command-line utility for administrative tasks."""
 import os
 import sys
+from wordcount.settings import DEBUG
 
 
 def main():
     os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'wordcount.settings')
+
+    if DEBUG and os.environ.get('RUN_MAIN'):
+        import ptvsd
+        ptvsd.enable_attach(address=('0.0.0.0', 3000))
+        print('Attached remote debugger')
+
     try:
         from django.core.management import execute_from_command_line
     except ImportError as exc:
