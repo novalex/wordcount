@@ -133,3 +133,10 @@ REST_FRAMEWORK = {
         'rest_framework.permissions.AllowAny'
     ]
 }
+
+
+# Wordcount API
+
+WORDCOUNT_API = {
+	'MAX_FILESIZE': 10000000, # Max file upload size in bytes
+}
