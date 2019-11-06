@@ -17,5 +17,5 @@ from django.urls import path
 from wordcount.views import FileUploadView
 
 urlpatterns = [
-    path('', FileUploadView.as_view()),
+    path('', FileUploadView.as_view()), # Default URL for uploading files as raw request data
 ]
