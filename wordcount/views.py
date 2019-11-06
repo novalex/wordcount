@@ -20,14 +20,9 @@ class FileUploadView(views.APIView):
 
     def process_file(self, file_obj):
         """
-        Handles validating and parsing file.
+        Handles processing the file and counting words.
+        Returns dict of data or false if no valid ASCII lines were found.
         """
-        # Validate maximum filesize
-        if file_obj.size > WORDCOUNT_API['MAX_FILESIZE']:
-            max_size_mb = (WORDCOUNT_API['MAX_FILESIZE'] / 1000000)
-            return Response({
-                'error': 'Uploaded file is too large, limit is %d MB' % max_size_mb
-            }, 413)
 
         line_nr = 0
         wordcount = 0
@@ -60,20 +55,17 @@ class FileUploadView(views.APIView):
                 # Check if we still have a word, skip if not
                 if not word_lc:
                     continue
-                # Increase word count
+                # Increment current word count
                 if word_lc in words:
                     words[word_lc] += 1
                 else:
                     words[word_lc] = 1
-
-            # Increment total word count
-            wordcount += len(words_now)
+                # Increment total word count
+                wordcount += 1
 
         # No valid ASCII text found in the file
         if not found_text:
-            return Response({
-                'error': 'File does not contain valid ASCII text, possibly corrupted or not a text file.'
-            }, 400)
+            return False
 
         return {
             'wordcount': wordcount,
@@ -102,14 +94,30 @@ class FileUploadView(views.APIView):
 
     def post(self, request):
         """
-        Handles processing uploaded file and saving information to database.
+        Handles validating and processing uploaded file and saving information to database.
         """
+        # Check if a file exists in the request data
         if not 'file' in request.data:
             return Response({
                 'error': 'No file uploaded.'
             }, 400)
 
-        data = self.process_file(request.data['file'])
+        file_obj = request.data['file']
+
+        # Validate maximum filesize
+        if file_obj.size > WORDCOUNT_API['MAX_FILESIZE']:
+            max_size_mb = (WORDCOUNT_API['MAX_FILESIZE'] / 1000000)
+            return Response({
+                'error': 'Uploaded file is too large, limit is %d MB' % max_size_mb
+            }, 413)
+
+        data = self.process_file(file_obj)
+
+        if not data:
+            # File could not be processed
+            return Response({
+                'error': 'File does not contain valid ASCII text, possibly corrupted or not a text file.'
+            }, 400)
 
         # Save results to DB
         file = FileUpload(
