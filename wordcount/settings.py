@@ -26,7 +26,7 @@ SECRET_KEY = 'enxg88z+#=^er@e$_=l!&=xf@3u=m6sw*%yo=l1q@gks_!hg4b'
 DEBUG = True
 
 ALLOWED_HOSTS = [
-	'*'
+    '*'
 ]
 
 
@@ -39,8 +39,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-   	'rest_framework',
-	'wordcount',
+    'rest_framework',
+    'wordcount',
 ]
 
 MIDDLEWARE = [
@@ -139,5 +139,5 @@ REST_FRAMEWORK = {
 # Wordcount API
 
 WORDCOUNT_API = {
-	'MAX_FILESIZE': 10000000, # Max file upload size in bytes
+    'MAX_FILESIZE': 10000000, # Max file upload size in bytes
 }
