@@ -1,6 +1,6 @@
 from wordcount import settings
 from wordcount.models import FileUpload
-from wordcount.serializers import FileUploadSerializer
+from wordcount.serializers import FileUploadSerializer, FileUploadSerializerSingle
 from rest_framework import views
 from rest_framework.response import Response
 from rest_framework.parsers import FileUploadParser
@@ -15,10 +15,9 @@ class FileUploadView(views.APIView):
         Validates given file size (in bytes) against maximum allowed value set in settings.
         """
         if size > settings.WORDCOUNT_API['MAX_FILESIZE']:
-            resp = {
+            return Response({
                 'error': 'Uploaded file is too large, limit is %d MB' % (settings.WORDCOUNT_API['MAX_FILESIZE'] / 1000000)
-            }
-            return Response(resp, 413)
+            }, 413)
 
     def process_file(self, file_obj):
         """
@@ -27,12 +26,13 @@ class FileUploadView(views.APIView):
         # Validate maximum filesize
         self.validate_filesize(file_obj.size)
 
-        # Read lines
         line_nr = 0
         wordcount = 0
         words = {}
         error_lines = []
         found_text = False
+
+        # Read lines
         for line in file_obj:
             line_nr += 1
 
@@ -48,7 +48,7 @@ class FileUploadView(views.APIView):
             # Get words
             words_now = re.sub(r'[^a-zA-Z\s]', '', line).split()
             for word in words_now:
-                word_lc = word.lower() # Convert all words to lowercase in order to keep count
+                word_lc = word.lower() # Convert all words to lowercase in order to keep count consistently
                 if word_lc in words:
                     words[word_lc] += 1
                 else:
@@ -59,10 +59,9 @@ class FileUploadView(views.APIView):
 
         # No valid ASCII text found in the file
         if not found_text:
-            resp = {
+            return Response({
                 'error': 'File does not contain valid ASCII text, possibly corrupted or not a text file.'
-            }
-            return Response(resp, 400)
+            }, 400)
 
         return {
             'wordcount': wordcount,
@@ -75,13 +74,28 @@ class FileUploadView(views.APIView):
         """
         Returns a list of all existing wordcount records.
         """
-        serialized = FileUploadSerializer(FileUpload.objects.all(), many=True)
+        if 'id' in request.GET:
+            try:
+                FileUpload.objects.get(id=request.GET.get('id'))
+            except FileUpload.DoesNotExist:
+                return Response({
+                    'error': 'No result found with specified id.'
+                }, 404)
+            serialized = FileUploadSerializerSingle(result)
+        else:
+            serialized = FileUploadSerializer(FileUpload.objects.all(), many=True)
+
         return Response(serialized.data, 200)
 
     def put(self, request, format=None):
         """
         Handles processing uploaded file and saving information to database.
         """
+        if not 'file' in request.data:
+            return Response({
+                'error': 'No file uploaded.'
+            }, 400)
+
         data = self.process_file(request.data['file'])
 
         # Save results to DB
@@ -94,6 +108,7 @@ class FileUploadView(views.APIView):
 
         # Create response object
         resp = {
+            'id': File.id,
             'wordcount': data['wordcount'],
             'words': data['words'],
             'lines': data['lines'],

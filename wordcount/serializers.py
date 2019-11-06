@@ -7,3 +7,9 @@ class FileUploadSerializer(serializers.ModelSerializer):
         model = FileUpload
         exclude = ['words']
         read_only_fields = ['__all__']
+
+class FileUploadSerializerSingle(serializers.ModelSerializer):
+    class Meta:
+        model = FileUpload
+        fields = '__all__'
+        read_only_fields = ['__all__']
