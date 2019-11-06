@@ -1,5 +1,7 @@
 {
 	"python.linting.pylintArgs": [
-		"--load-plugins pylint_django"
+		"--load-plugins=pylint_django",
+		"--max-line-length=160",
+		"--ignore=migrations"
 	]
 }
