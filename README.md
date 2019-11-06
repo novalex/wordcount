@@ -25,6 +25,8 @@ Execute `docker-compose exec web python manage.py migrate` to create the databas
   - You should get a 200 response code with JSON data containing the ID, wordcount, line count and list of individual words and their count for the result with the specified ID.
   - If a result with the specified ID does not exist, a 404 code will be returned along with a relevant message.
 
+Grab the Postman request collection [here](https://www.getpostman.com/collections/46a2d3a9ead5d9a1f486).
+
 ### Resources
 - [Docker compose setup](https://docs.docker.com/compose/django/) with Django and PostgresSQL
 - Debugging setup with [ptvsd](https://github.com/Microsoft/ptvsd) and help from [this guide](https://gist.github.com/veuncent/1e7fcfe891883dfc52516443a008cfcb)
