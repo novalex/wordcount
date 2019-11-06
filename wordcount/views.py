@@ -48,11 +48,19 @@ class FileUploadView(views.APIView):
                 error_lines.append(line_nr)
                 continue
 
-            # Get words
-            words_now = re.sub(r'[^a-zA-Z\s]', '', line).split()
+            # Remove undesirable characters from line
+            line = re.sub(r'[^a-zA-Z0-9\s\-\'@\.,\\/]', '', line)
+            # Split line into individual words
+            words_now = line.split()
             for word in words_now:
                 # Convert all words to lowercase in order to keep count consistently
                 word_lc = word.lower()
+                # Remove trailing commas, periods, slashes
+                word_lc = word_lc.rstrip(',./\'')
+                # Check if we still have a word, skip if not
+                if not word_lc:
+                    continue
+                # Increase word count
                 if word_lc in words:
                     words[word_lc] += 1
                 else:
