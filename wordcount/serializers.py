@@ -5,5 +5,5 @@ from wordcount.models import FileUpload
 class FileUploadSerializer(serializers.ModelSerializer):
     class Meta:
         model = FileUpload
-        exclude = ['words', 'extra']
+        exclude = ['words']
         read_only_fields = ['__all__']

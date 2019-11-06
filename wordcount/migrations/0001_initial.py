@@ -20,7 +20,6 @@ class Migration(migrations.Migration):
                 ('wordcount', models.IntegerField()),
                 ('words', django.contrib.postgres.fields.jsonb.JSONField()),
                 ('lines', models.IntegerField()),
-                ('extra', django.contrib.postgres.fields.jsonb.JSONField(default=dict)),
             ],
         ),
     ]

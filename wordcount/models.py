@@ -8,4 +8,3 @@ class FileUpload(models.Model):
     wordcount = models.IntegerField()
     words = JSONField()
     lines = models.IntegerField()
-    extra = JSONField(default=dict)
