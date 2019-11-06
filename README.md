@@ -27,6 +27,9 @@ Execute `docker-compose exec web python manage.py migrate` to create the databas
 
 Grab the Postman request collection [here](https://www.getpostman.com/collections/46a2d3a9ead5d9a1f486).
 
+### To run tests
+Execute `docker-compose exec web python manage.py test`.
+
 ### Resources
 - [Docker compose setup](https://docs.docker.com/compose/django/) with Django and PostgresSQL
 - Debugging setup with [ptvsd](https://github.com/Microsoft/ptvsd) and help from [this guide](https://gist.github.com/veuncent/1e7fcfe891883dfc52516443a008cfcb)
