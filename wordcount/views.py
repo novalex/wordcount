@@ -100,7 +100,7 @@ class FileUploadView(views.APIView):
 
         return Response(serialized.data, 200)
 
-    def put(self, request):
+    def post(self, request):
         """
         Handles processing uploaded file and saving information to database.
         """

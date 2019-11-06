@@ -13,7 +13,7 @@ Execute `docker-compose up` from the root dir. The web service will become avail
 Execute `docker-compose exec web python manage.py migrate` to create the database tables.
 
 ### To use API
-- Uploading: do a `PUT` request to `0.0.0.0:8000` with the raw file data as body and a `Content-Disposition: attachment; filename=testfile` header;
+- Uploading: do a `POST` request to `0.0.0.0:8000` with the raw file data as body and a `Content-Disposition: attachment; filename=testfile` header;
   - You should receive a 200 response code with JSON data containing the wordcount, line count and list of individual words and their count.
   - If no file is uploaded, a 400 code will be reurned with a relevant message.
   - If file is larger than 10MB, a 413 code will be returned with a relevant message.
