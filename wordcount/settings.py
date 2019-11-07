@@ -140,4 +140,5 @@ REST_FRAMEWORK = {
 
 WORDCOUNT_API = {
     'MAX_FILESIZE': 10000000, # Max file upload size in bytes
+    'SPELLCHECK_API_KEY': '' # https://azure.microsoft.com/try/cognitive-services/my-apis/
 }

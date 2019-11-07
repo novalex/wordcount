@@ -12,6 +12,7 @@ class FileUploadTests(APITestCase):
     """
     Test file upload and parsing functionality.
     """
+
     def __init__(self, methodName):
         super().__init__(methodName=methodName)
         self.url = urls.reverse('fileupload')
@@ -129,3 +130,14 @@ class FileUploadTests(APITestCase):
         self.assertEqual(resp.data['wordcount'], len(remaining))
         for word in resp.data['words']:
             self.assertIn(word, remaining)
+
+    def test_spell_checking(self):
+        """
+        Test spell checking functionality.
+        """
+        content = 'Hello Hollo Hllo World Worl Wrld'
+        client = APIClient(HTTP_CONTENT_DISPOSITION='attachment; filename=testfile_spellcheck')
+        resp = client.post(self.url + '?check_spelling', content, content_type='text/plain')
+        # Assert that the misspelled words are returned in the result
+        self.assertIn('misspelled_words', resp.data['words'])
+        self.assertEqual(resp.data['words']['misspelled_words'], ['hollo', 'hllo', 'worl', 'wrld'])

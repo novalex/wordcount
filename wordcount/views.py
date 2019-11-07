@@ -9,6 +9,7 @@ from rest_framework.parsers import FileUploadParser
 from wordcount.settings import WORDCOUNT_API
 from wordcount.models import FileUpload
 from wordcount.serializers import FileUploadSerializer, FileUploadSerializerSingle
+from wordcount.functions import check_spelling
 
 
 class FileUploadView(views.APIView):
@@ -16,7 +17,6 @@ class FileUploadView(views.APIView):
     Handle uploading files, processing and fetching results.
     """
     parser_classes = [FileUploadParser]
-
 
     def process_file(self, file_obj, request):
         """
@@ -69,6 +69,9 @@ class FileUploadView(views.APIView):
         # No valid ASCII text found in the file
         if not found_text:
             return False
+
+        if 'check_spelling' in request.GET:
+            words['misspelled_words'] = check_spelling(' '.join(words))
 
         return {
             'wordcount': wordcount,
