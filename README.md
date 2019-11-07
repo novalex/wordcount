@@ -30,6 +30,11 @@ Grab the Postman request collection [here](https://www.getpostman.com/collection
 ### To run tests
 Execute `docker-compose exec web python manage.py test`.
 
+### Mentions
+- The file size limit uses decimal bytes, i.e. `10MB = 10,000,000B`.
+- Parser removes undesirable characters before splitting the words, but it is far from perfect and things like breaking hyphens will not work properly.
+- All words in the response will be lowercased in order to show the total count for each word occurence, regardless of the original case.
+
 ### Resources
 - [Docker compose setup](https://docs.docker.com/compose/django/) with Django and PostgresSQL
 - Debugging setup with [ptvsd](https://github.com/Microsoft/ptvsd) and help from [this guide](https://gist.github.com/veuncent/1e7fcfe891883dfc52516443a008cfcb)
