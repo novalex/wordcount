@@ -18,6 +18,7 @@ Execute `docker-compose exec web python manage.py migrate` to create the databas
   - If no file is uploaded, a 400 code will be reurned with a relevant message.
   - If file is larger than 10MB, a 413 code will be returned with a relevant message.
   - If file does not contain any lines with valid ASCII, a 400 code will be returned with a relevant message.
+  - If the 'skip_words_containing' query arg is set (e.g. `0.0.0.0:8000?skip_words_containing=blue`), all words containing the specified value (e.g. "blue") within them will be removed from the result and not be counted.
 - Listing all results: do a `GET` request to `0.0.0.0:8000` or visit the address in a browser;
   - You should get a 200 response code with JSON data containing the ID, wordcount and line count for each result.
   - If no results exist in the DB, an empty array will be returned.

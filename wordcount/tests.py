@@ -115,3 +115,17 @@ class FileUploadTests(APITestCase):
         # Check listing non-existing result id
         resp = client.get(self.url + '?id=999')
         self.assertEqual(resp.status_code, 404)
+
+    def test_word_skipping(self):
+        """
+        Test skipping words which contain specified value functionality.
+        """
+        skip = 'blue'
+        content = 'red green blue sparrow bluebird afluent abluent trueblue'
+        client = APIClient(HTTP_CONTENT_DISPOSITION='attachment; filename=testfile_skipping')
+        resp = client.post(self.url + '?skip_words_containing=%s' % skip, content, content_type='text/plain')
+        # Assert that only words that do not contain specified value are returned and counted
+        remaining = list(filter(lambda word, skip=skip: skip not in word, content.split()))
+        self.assertEqual(resp.data['wordcount'], len(remaining))
+        for word in resp.data['words']:
+            self.assertIn(word, remaining)

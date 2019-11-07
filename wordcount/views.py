@@ -18,17 +18,17 @@ class FileUploadView(views.APIView):
     parser_classes = [FileUploadParser]
 
 
-    def process_file(self, file_obj):
+    def process_file(self, file_obj, request):
         """
         Handles processing the file and counting words.
         Returns dict of data or false if no valid ASCII lines were found.
         """
-
         line_nr = 0
         wordcount = 0
         words = {}
         error_lines = []
         found_text = False
+        skip_word = False if 'skip_words_containing' not in request.GET else request.GET['skip_words_containing']
 
         # Read lines
         for line in file_obj:
@@ -54,6 +54,9 @@ class FileUploadView(views.APIView):
                 word_lc = word_lc.rstrip(',./\'')
                 # Check if we still have a word, skip if not
                 if not word_lc:
+                    continue
+                # Skip words containing specified value if the query arg is set
+                if skip_word and skip_word in word_lc:
                     continue
                 # Increment current word count
                 if word_lc in words:
@@ -111,7 +114,7 @@ class FileUploadView(views.APIView):
                 'error': 'Uploaded file is too large, limit is %d MB' % max_size_mb
             }, 413)
 
-        data = self.process_file(file_obj)
+        data = self.process_file(file_obj, request)
 
         if not data:
             # File could not be processed
